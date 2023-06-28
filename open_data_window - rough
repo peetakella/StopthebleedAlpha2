@@ -1,0 +1,49 @@
+def open_data_window():
+    data_window = Toplevel(root)
+    data_window.title("Data")
+    data_window.geometry("1024x600")
+    data_window.configure(bg="grey75")
+    
+    global filename
+    
+    def browseFiles():
+        filename = filedialog.askopenfilename(initialdir = "/", title = "Select a File", filetypes = (("Text files", "*.txt*"), ("all files", "*.*")))
+    
+        label_file_explorer.configure(text="File Opened: "+filename)
+        
+        with open(filename, 'r') as f:
+            #configfile.insert(INSERT, f.read())
+            data = f.read()
+            
+        pathh.insert(END, filename)
+        txtarea.insert(END, data)
+        #filename.close()
+        
+        return filename
+    
+    #configfile = Text(data_window, wrap=WORD, width=45, height= 20)
+    
+    txtarea = Text(data_window, width=40, height=20)
+    txtarea.grid(column = 1, row = 1)
+    #txtarea.pack(pady=20)
+
+    pathh = Entry(data_window)
+    pathh.grid(column = 1, row = 2)
+    #pathh.pack(side=LEFT, expand=True, fill=X, padx=20)
+    
+    label_file_explorer = Label(data_window, text = "File Explorer using Tkinter", width = 100, height = 4, fg = "blue")
+    label_file_explorer.grid(column = 0, row = 0)
+      
+    button_explore = Button(data_window, text = "Browse Files", command = browseFiles)
+    button_explore.grid(column = 0, row = 1)  
+  
+    button_exit = Button(data_window, text = "Exit", command = exit)
+    button_exit.grid(column = 0,row = 2)
+    
+
+
+    
+    #with open(filename, 'r') as f:
+     #   configfile.insert(INSERT, f.read())
+    
+    
