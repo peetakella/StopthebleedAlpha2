@@ -1,17 +1,17 @@
 from tkinter import *
 from tkinter import ttk
 from time import sleep
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg #graphing
 from matplotlib.figure import Figure
 import numpy as np
-
 import time #i2c ~~
 import math
 import smbus
-
 import RPi.GPIO as GPIO #io~~
-
 import matplotlib.pyplot as plt #graphing
+
+#----------------------------------------------------------------
+
 # Create the main window
 root = Tk()
 root.title("Better Bleeding Control")
@@ -19,16 +19,27 @@ root.title("Better Bleeding Control")
 root.configure(bg="grey75")
 root.attributes("-zoomed", True)  # Maximizes the window
 #root.attributes("-fullscreen", True)  # substitute `Tk` for whatever your `Tk()` object is called
+global largetitletext, mediumtitletext, mediumtext, smalltext
 largetitletext = 80
 mediumtitletext = 60
 mediumtext = 30
 smalltext = 25
+
 #Add Title frame
 frame1 = LabelFrame(root, padx=50, pady=10,fg="black", bg="gray75")
 frame1.grid(row=0, column=0,columnspan=2,pady=20, padx=25)
 # Add a label at the top of the window
 label_home = Label(frame1, text="Hemorrhage Control Trainer", font=("Arial", largetitletext), fg="black", bg="gray75")
 label_home.grid(row=0, column=0,  pady=20, padx=10)
+
+# Add two buttons underneath the label of home page
+button_scenario = Button(root, text="Choose Scenario", command = lambda: [open_scenario_window()], bg="firebrick3",fg="white",  font=("Arial", mediumtitletext), padx=50, pady=300)
+button_scenario.grid(row=1, column=0, padx=100, pady=20)
+
+button_retrieve = Button(root, text="Retrieve Data", command = lambda: [open_data_window()],bg="firebrick3",fg="white", font=("Arial", mediumtitletext), padx=100, pady=300)
+button_retrieve.grid(row=1, column=1, padx=100, pady=20)
+
+#-------------------------------------------------------------------------------
 
 def open_data_window():
     
@@ -46,6 +57,8 @@ def open_data_window():
     # Add a label at the top of the window
     label_scenario = Label(frame2, text="View Data", font=("Arial", largetitletext), bg="grey75")
     label_scenario.grid(row=0, column=0, columnspan=3, pady=50)
+
+#----------------------------------------------------------------------------------------------------------
 
 # Create a function to open the scenario window
 def open_scenario_window():
@@ -75,8 +88,6 @@ def open_scenario_window():
     #Add Right Frame
     frameR = LabelFrame(scenario_window, padx=50, pady=5,bg="firebrick3", fg="white")
     frameR.grid(row=1, column=2,padx=50,pady=25)
-
-
 
     # Add the left section with wound choice checkboxes
     label_wound_choice = Label(frameL, text="Practice Method", bg="firebrick3", fg="white",font=("Arial", mediumtitletext))
@@ -139,27 +150,9 @@ def open_scenario_window():
     
     #Button to enter scenario
     button_scenario = Button(scenario_window, text="Begin", command = lambda: [function(method.get(), speed.get(), liquid.get())],  font=("Arial", mediumtitletext),bg="firebrick3",fg="white", padx=30)
-    button_scenario.grid(row=2, column=1, padx=50, pady=5)
-    
-    
-# Add two buttons underneath the label of home page
-button_scenario = Button(root, text="Choose Scenario", command = lambda: [open_scenario_window()], bg="firebrick3",fg="white",  font=("Arial", mediumtitletext), padx=50, pady=300)
-button_scenario.grid(row=1, column=0, padx=100, pady=20)
-
-button_retrieve = Button(root, text="Retrieve Data", command = lambda: [open_data_window()],bg="firebrick3",fg="white", font=("Arial", mediumtitletext), padx=100, pady=300)
-button_retrieve.grid(row=1, column=1, padx=100, pady=20)
-#----------------------------------------------------------------------------------
-
-
-
-
-
+    button_scenario.grid(row=2, column=1, padx=50, pady=5)   
 
 #----------------------------------------------------------------------------------
-
-
-
-#----------------------------
 
 def function(m, s, l):
     #set up i2c
@@ -285,14 +278,7 @@ def function(m, s, l):
     sim_window.attributes("-zoomed", True)  # Maximizes the window
     #sim_window.attributes("-fullscreen", True)  # substitute `Tk` for whatever your `Tk()` object is called
     sleep(.5)
-            
-        #print ('Wound Pack', WP.get())
-        #print ('Tourniquet', TQ.get())
-        #print ('Direct Pressure', DP.get())
-        #print ('Method is', method.get())
-        #print ('Sound', sound.get())
-        #print ('liquid', liquid.get())
-        #print ('Speed', speed.get())
+    global largetitletext, mediumtitletext, mediumtext, smalltext        
 
     simlabelframe = LabelFrame(sim_window, padx=50, pady=10,fg="black", bg="gray75")
     simlabelframe.grid(row=0, column=0,columnspan=2,pady=20, padx=25)
@@ -312,29 +298,34 @@ def function(m, s, l):
 
 
         # Add the updates section label
-    label_updates = Label(updatesframe, text="Updates", bg="firebrick3", fg="white",font=("Arial", 20))
+    label_updates = Label(updatesframe, text="Updates", bg="firebrick3", fg="white", font=("Arial", mediumtitletext), anchor='ne')
     label_updates.grid(row=0, column=0)
+    
+    # Create text widget and specify size.
+    T = Text(updatesframe, height = 30, width = 50, bg="white")
+    T.grid(row=1, column=0)
+    
+        # Add the frame that the graph will go in
+    #label_graph = Label(graphframe, text="graph", bg="firebrick3", fg="white",font=("Arial", 20))
+    #label_graph.grid(row=0, column=0)
         
-        # Add the fram hat the graph will go in
-    label_graph = Label(graphframe, text="graph", bg="firebrick3", fg="white",font=("Arial", 20))
-    label_graph.grid(row=0, column=0)
-        
-        # Add the frame that the bleedout bar will go in
-    label_bleedoutbar = Label(bleedoutbarframe, text="bleedoutbar", bg="firebrick3", fg="white",font=("Arial", 20))
+        # Add the label that the bleedout bar will go in
+    label_bleedoutbar = Label(bleedoutbarframe, text="Bleedoutbar", bg="firebrick3", fg="white", font=("Arial", mediumtitletext), padx=10, pady=10)
     label_bleedoutbar.grid(row=0, column=0)
        
 
-    label_home = Label(graphframe, text="Pressure Applied vs. Time", font=("Arial", 20), fg="white", bg="firebrick3")
+    label_home = Label(graphframe, text="Pressure Applied vs. Time", font=("Arial", mediumtitletext), fg="white", bg="firebrick3", padx=10, pady=10)
     label_home.grid(row=0, column=0)
         
-
-    fig = Figure()
-    '''t=[]
-    t = np.arange(0, 3, .01)
-    m=[]
-    m= 2 * np.sin(2 * np.pi * t)
-    fig.add_subplot(111).plot(t, m)'''
         
+        
+    p = ttk.Progressbar(bleedoutbarframe, orient="horizontal", length=1915, mode="determinate",
+                        takefocus=True, maximum=100)
+    p['value'] = 25
+    p.grid(row=1, column=0,ipady=20)
+    
+    
+    fig = Figure()     
     x = []
     m = []
     ma_x = []
@@ -342,38 +333,18 @@ def function(m, s, l):
     ax = fig.add_subplot(111)
     line, = ax.plot(x, m)
     line_20ref, = ax.plot(x, ma_x)
-
-
+    
         
     # Add the canvas for the graph
     canvas_graph = FigureCanvasTkAgg(fig, master=graphframe)  # A tk.DrawingArea.
     canvas_graph.draw()
     canvas_graph.get_tk_widget().grid(row=1,column=0)
-
-        
-        
-    '''p = ttk.Progressbar(bleedoutbarframe, orient="horizontal", length=200, mode="determinate",
-                        takefocus=True, maximum=100)
-    p['value'] = 50
-    p.grid(row=1, column=0)'''
-
-
-        # Add the canvas for the bleedout bar
-    '''canvas_bleedoutbar = Canvas(bleedoutbarframe, text="bleedoutbar", bg="firebrick3", fg="black",font=("Arial", 20))
-    canvas_bleedoutbar.draw()
-    label_bleedoutbar.grid(row=1, column=0)'''
         
     def graph_function(t, d):
             
         ma_x = []
         x = t #[]
         m = d #[]
-        
-        #time = t
-        #data = d
-        
-        #x.append(time)
-        #m.append(data)
         ma_x.append(20)
         line.set_data(x, m)
         line_20ref.set_data(x, ma_x)
